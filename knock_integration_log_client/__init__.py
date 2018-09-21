@@ -88,25 +88,33 @@ class IntegrationTransactionLog(object):
 
 
 class IntegrationLoggingService(object):
-    SERVICE_HOST = 'https://9o4jvvpyn1.execute-api.us-east-1.amazonaws.com'
+    _service_host = None
 
     session = requests.Session()
 
     @classmethod
+    def initialize(cls, service_host):
+        cls._service_host = service_host
+
+    @classmethod
     def create_transaction(cls, tag, start_time, meta=None):
+        cls._validate_is_initialized()
+
         payload = dict(
             start_time=start_time,
             tag=tag,
             meta=meta
         )
 
-        request = cls.session.post('{}/development/transaction'.format(cls.SERVICE_HOST), json=payload)
+        request = cls.session.post('{}/transaction'.format(cls._service_host), json=payload)
         request.raise_for_status()
 
         return request.json()
 
     @classmethod
     def update_transaction(cls, integration_transaction_id, end_time=None, meta=None, response_url=None):
+        cls._validate_is_initialized()
+
         payload = dict()
 
         if end_time is not None:
@@ -118,33 +126,44 @@ class IntegrationLoggingService(object):
         if response_url is not None:
             payload['response_url'] = response_url
 
-        response = cls.session.put('{}/development/transaction/{}'.format(cls.SERVICE_HOST, integration_transaction_id), json=payload)
+        response = cls.session.put('{}/transaction/{}'.format(cls._service_host, integration_transaction_id), json=payload)
         response.raise_for_status()
 
     @classmethod
     def get_transaction(cls, integration_transaction_id):
-        response = cls.session.get('{}/development/transaction/{}'.format(cls.SERVICE_HOST, integration_transaction_id))
+        cls._validate_is_initialized()
+
+        response = cls.session.get('{}/transaction/{}'.format(cls._service_host, integration_transaction_id))
         response.raise_for_status()
 
         return response.json()
 
     @classmethod
     def search_transactions(cls):
+        cls._validate_is_initialized()
+
         query = dict(distinct='tag', order_by='tag,start_time')
 
-        response = cls.session.post('{}/development/transaction/search'.format(cls.SERVICE_HOST), json=query)
+        response = cls.session.post('{}/transaction/search'.format(cls._service_host), json=query)
         response.raise_for_status()
 
         return response.json()
 
     @classmethod
     def create_transaction_exceptions(cls, integration_transaction_id, exceptions):
+        cls._validate_is_initialized()
+
         payload = dict(
             exceptions=exceptions
         )
 
-        response = cls.session.post('{}/development/transaction/{}/exception'.format(cls.SERVICE_HOST, integration_transaction_id), json=payload)
+        response = cls.session.post('{}/transaction/{}/exception'.format(cls._service_host, integration_transaction_id), json=payload)
         response.raise_for_status()
+
+    @classmethod
+    def _validate_is_initialized(cls):
+        if not cls._service_host:
+            raise Exception('Not initialized. Call initialize with the service host.')
 
     @classmethod
     def generate_transaction_exception_object(cls, exception):
