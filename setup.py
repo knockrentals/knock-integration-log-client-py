@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='knockintegrationlogclient',
-    version='1.0',
+    version='1.1',
     description='Knock integration logging client',
     author='Knock, Inc.',
     packages=['knock_integration_log_client'])
