@@ -45,7 +45,7 @@ class IntegrationTransactionLog(object):
         if meta is not None:
             self._meta = meta
         else:
-            meta = dict()
+            self._meta = dict()
 
         self._meta['error_count'] = self._exception_count
 
