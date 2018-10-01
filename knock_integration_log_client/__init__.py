@@ -13,6 +13,7 @@ class IntegrationTransactionLog(object):
     _start_time = None
     _response_url = None
     _exceptions = []
+    _exception_count = 0
 
     _is_error = False
 
@@ -43,6 +44,10 @@ class IntegrationTransactionLog(object):
 
         if meta is not None:
             self._meta = meta
+        else:
+            meta = dict()
+
+        self._meta['error_count'] = self._exception_count
 
         if response_url is not None:
             self._response_url = response_url
@@ -64,7 +69,9 @@ class IntegrationTransactionLog(object):
 
     def add_exception(self, e):
         exception_object = IntegrationLoggingService.generate_transaction_exception_object(e)
+
         self._exceptions.append(exception_object)
+        self._exception_count += 1
 
     def flush_exceptions(self):
         if self._id is None and not self._is_error:
