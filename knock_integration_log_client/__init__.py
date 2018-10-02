@@ -22,13 +22,12 @@ class IntegrationTransactionLog(object):
     def __init__(self, sync_type, vendor, credential_id, meta=None):
         self._start_time = arrow.now().isoformat()
         self._tag = IntegrationLoggingService.generate_transaction_tag(sync_type, vendor, credential_id)
-        self._meta = meta
+        self._meta = meta or dict()
 
     def set_http_error_handler(self, exception_handler_func):
         self._exception_handler_func = exception_handler_func
 
     def set_meta_field(self, key, value):
-        self._meta = self._meta or dict()
         self._meta[key] = value
 
     def create(self):
@@ -47,9 +46,7 @@ class IntegrationTransactionLog(object):
             self._end_time = end_time
 
         if meta is not None:
-            self._meta = meta
-        else:
-            self._meta = dict()
+            self._meta.update(meta)
 
         self._meta['error_count'] = self._exception_count
 
