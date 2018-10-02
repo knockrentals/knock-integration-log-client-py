@@ -2,7 +2,6 @@ import traceback
 
 import arrow
 import requests
-from requests import HTTPError
 
 
 class IntegrationTransactionLog(object):
@@ -33,7 +32,7 @@ class IntegrationTransactionLog(object):
     def create(self):
         try:
             response = IntegrationLoggingService.create_transaction(self._tag, self._start_time, self._meta)
-        except HTTPError as e:
+        except Exception as e:
             self._is_error = True
             self._on_exception(e)
 
@@ -63,7 +62,7 @@ class IntegrationTransactionLog(object):
                     end_time=self._end_time,
                     meta=self._meta,
                     response_url=self._response_url)
-            except HTTPError as e:
+            except Exception as e:
                 self._on_exception(e)
 
                 return
@@ -83,7 +82,7 @@ class IntegrationTransactionLog(object):
 
         try:
             IntegrationLoggingService.create_transaction_exceptions(self._id, self._exceptions)
-        except HTTPError as e:
+        except Exception as e:
             self._on_exception(e)
 
             return
