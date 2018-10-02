@@ -27,6 +27,10 @@ class IntegrationTransactionLog(object):
     def set_http_error_handler(self, exception_handler_func):
         self._exception_handler_func = exception_handler_func
 
+    def set_meta_field(self, key, value):
+        self._meta = self._meta or dict()
+        self._meta[key] = value
+
     def create(self):
         try:
             response = IntegrationLoggingService.create_transaction(self._tag, self._start_time, self._meta)
