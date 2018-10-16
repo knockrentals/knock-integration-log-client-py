@@ -36,7 +36,7 @@ class IntegrationTransactionLog(object):
         self._meta[key] = value
 
     def create(self):
-        self._log('creating transaction...')
+        self._log('Creating transaction...')
 
         try:
             response = IntegrationLoggingService.create_transaction(self._tag, self._start_time, self._meta)
@@ -47,7 +47,7 @@ class IntegrationTransactionLog(object):
 
             return
 
-        self._log('created transaction: '.format(response['integration_transaction_id']))
+        self._log('created transaction: {}'.format(response['integration_transaction_id']))
         self._id = response['integration_transaction_id']
 
     def update(self, end_time=None, meta=None, response_url=None):
