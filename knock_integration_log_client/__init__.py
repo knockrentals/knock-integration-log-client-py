@@ -36,7 +36,7 @@ class IntegrationTransactionLog(object):
         self._meta[key] = value
 
     def create(self):
-        self._log('creating transaction...')
+        self._log('Creating transaction...')
 
         try:
             response = IntegrationLoggingService.create_transaction(self._tag, self._start_time, self._meta)
@@ -47,7 +47,7 @@ class IntegrationTransactionLog(object):
 
             return
 
-        self._log('created transaction: '.format(response['integration_transaction_id']))
+        self._log('created transaction: {}'.format(response['integration_transaction_id']))
         self._id = response['integration_transaction_id']
 
     def update(self, end_time=None, meta=None, response_url=None):
@@ -68,8 +68,10 @@ class IntegrationTransactionLog(object):
         if self._id is None and not self._is_error:
             self._log('Creating transaction since it hasn\'t been created')
             self.create()
-        else:
+        elif self._is_error:
             self._log('Transaction was in error state, did not create')
+        else:
+            self._log('Updating log ID: {}'.format(self._id))
 
         if (end_time or meta or response_url) and self._id is not None:
             try:
@@ -120,8 +122,6 @@ class IntegrationTransactionLog(object):
     def _log(self, message):
         if self._logger_func is not None:
             self._logger_func(message)
-        else:
-            print message
 
 
 class IntegrationLoggingService(object):
