@@ -68,8 +68,10 @@ class IntegrationTransactionLog(object):
         if self._id is None and not self._is_error:
             self._log('Creating transaction since it hasn\'t been created')
             self.create()
-        else:
+        elif self._is_error:
             self._log('Transaction was in error state, did not create')
+        else:
+            self._log('Updating log ID: {}'.format(self._id))
 
         if (end_time or meta or response_url) and self._id is not None:
             try:
@@ -120,8 +122,6 @@ class IntegrationTransactionLog(object):
     def _log(self, message):
         if self._logger_func is not None:
             self._logger_func(message)
-        else:
-            print message
 
 
 class IntegrationLoggingService(object):
