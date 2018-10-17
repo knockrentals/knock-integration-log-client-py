@@ -32,7 +32,7 @@ class IntegrationTransactionLog(object):
         self._logger_func = logger_func
 
     def set_meta_field(self, key, value):
-        self._log('set meta field on integration log: {]:{}'.format(key, value))
+        self._log('set meta field on integration log: {}:{}'.format(key, value))
         self._meta[key] = value
 
     def create(self):
@@ -41,7 +41,7 @@ class IntegrationTransactionLog(object):
         try:
             response = IntegrationLoggingService.create_transaction(self._tag, self._start_time, self._meta)
         except Exception as e:
-            self._log('Error creating transaction: '.format(e.message))
+            self._log('Error creating transaction: {}'.format(e.message))
             self._is_error = True
             self._on_exception(e)
 
