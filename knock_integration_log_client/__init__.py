@@ -144,7 +144,6 @@ class IntegrationLoggingService(object):
         )
 
         request = cls.session.post('{}/transaction'.format(cls._service_host), json=payload)
-        print(request.content)
         request.raise_for_status()
 
         return request.json()
