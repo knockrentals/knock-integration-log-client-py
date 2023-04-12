@@ -41,7 +41,7 @@ class IntegrationTransactionLog(object):
         try:
             response = IntegrationLoggingService.create_transaction(self._tag, self._start_time, self._meta)
         except Exception as e:
-            self._log('Error creating transaction: {}'.format(e.message))
+            self._log('Error creating transaction: {}'.format(e.args[0]))
             self._is_error = True
             self._on_exception(e)
 
@@ -81,13 +81,13 @@ class IntegrationTransactionLog(object):
                     meta=self._meta,
                     response_url=self._response_url)
             except Exception as e:
-                self._log('Failed to update transaction: {}'.format(e.message))
+                self._log('Failed to update transaction: {}'.format(e.args[0]))
                 self._on_exception(e)
 
                 return
 
     def add_exception(self, e):
-        self._log('added exception {}'.format(e.message))
+        self._log('added exception {}'.format(e.args[0]))
 
         exception_object = IntegrationLoggingService.generate_transaction_exception_object(e)
 
@@ -106,7 +106,7 @@ class IntegrationTransactionLog(object):
         try:
             IntegrationLoggingService.create_transaction_exceptions(self._id, self._exceptions)
         except Exception as e:
-            self._log('failed to flush exceptions {}'.format(e.message))
+            self._log('failed to flush exceptions {}'.format(e.args[0]))
             self._on_exception(e)
 
             return
@@ -114,7 +114,7 @@ class IntegrationTransactionLog(object):
         self._exceptions = []
 
     def _on_exception(self, e):
-        self._log('error: {}'.format(e.message))
+        self._log('error: {}'.format(e.args[0]))
 
         if self._exception_handler_func is not None:
             self._exception_handler_func(e)
