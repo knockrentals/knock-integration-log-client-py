@@ -1,7 +1,8 @@
 name: Fortify ScanCentral SAST Scan
 on:
+  workflow_dispatch:
   schedule:
-    - cron: 0 3 10 * *
+    - cron: 0 3 5 * *
 
 env:
   FOD_USER: ${{ secrets.FOD_USER }}
@@ -55,5 +56,5 @@ jobs:
           FOD_RELEASE_ID: ${{ env.FOD_RELEASE_ID }}
           FOD_URL: "https://ams.fortify.com/"
           FOD_API_URL: "https://api.ams.fortify.com/"
-          FOD_UPLOADER_OPTS: "-ep 2 -pp 0"
+          FOD_UPLOADER_OPTS: "-ep 2 -pp 2"
           FOD_UPLOADER_NOTES: 'Triggered by GitHub Actions (${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})'
