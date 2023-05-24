@@ -207,7 +207,7 @@ class IntegrationLoggingService(object):
         stacktrace = traceback.format_exc()
 
         return dict(
-            message=exception.message,
+            message=exception.args[0],
             stack_trace=stacktrace,
             created_time=arrow.now().isoformat()
         )
