@@ -5,8 +5,11 @@ on:
     - cron: 0 3 5 * *
 
 env:
-  FOD_USER: ${{ secrets.FOD_USER }}
-  FOD_PAT: ${{ secrets.FOD_PAT }}
+  #FOD_USER: ${{ secrets.FOD_USER }}
+  #FOD_PAT: ${{ secrets.FOD_PAT }}
+  #Hardcoding the username/password for this one template is the only way to get it to succeed.  Must be a bug in GitHub Actions that is prevent it from working with tokens.
+  FOD_USER: jbirmingham
+  FOD_PAT: M7D45v4UXF!kwZR
   FOD_RELEASE_ID: 786331
 
 jobs:                                                  
