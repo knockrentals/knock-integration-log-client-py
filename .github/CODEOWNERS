@@ -1,0 +1,8 @@
+# DevOps needs to review and approve any changes to infra
+/infra/                                 @knockrentals/co-devops
+
+# Integrations team needs to review and changes to these directories
+/knock_integration_log_client/          @knockrentals/co-integrations
+
+# Require code owner governance review to change this file
+/.github/CODEOWNERS                     @knockrentals/co-oversight
