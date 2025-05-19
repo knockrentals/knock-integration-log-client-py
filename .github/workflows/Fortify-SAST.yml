@@ -1,16 +1,39 @@
-name: Fortify ScanCentral SAST Scan
+name: Fortify AST Scan
+
 on:
   workflow_dispatch:
   schedule:
     - cron: 0 3 5 * *
-
+    
 jobs:
-  Fortify-SAST:
+  Fortify-AST-Scan:
     runs-on: ubuntu-latest
-    name: Run Fortify Scan
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
     steps:
-      - uses: knockrentals/gh-action-fortify-scan@v1
+      # Check out source code
+      - name: Check Out Source Code
+        uses: actions/checkout@v3
+
+      # Java is required to run the various Fortify utilities. Ensuring proper version is installed on the runner.
+      - name: Setup Java
+        uses: actions/setup-java@v3
         with:
-          fod-user: ${{ secrets.FOD_USER }}
-          fod-pat: ${{ secrets.FOD_PAT }}
-          fod-release-id: 786331
+          java-version: 17
+          distribution: 'temurin'
+
+      # Perform Fortify on Demand SAST + SCA scan and import SAST results into GitHub code scanning alerts
+      - name: Run FoD SAST Scan
+        uses: fortify/github-action@v1
+        with:
+          sast-scan: true
+        env:
+          FOD_URL: https://ams.fortify.com
+          FOD_TENANT: Real_Page
+          FOD_CLIENT_ID: ${{secrets.FOD_CLIENT_ID}}
+          FOD_CLIENT_SECRET: ${{secrets.FOD_CLIENT_SECRET}}
+          FOD_RELEASE: 786331
+          EXTRA_PACKAGE_OPTS: -oss
